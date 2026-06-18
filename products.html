@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Shop Products</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<a href="index.html" class="logo">
+    🧶 WoolCraft Studio
+</a>
+
+<nav>
+
+<a href="index.html">Home</a>
+<a href="products.html">Shop</a>
+<a href="cart.html">
+🛒 Cart (<span id="cartCount">0</span>)
+</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+
+<select id="categoryFilter" class="nav-filter">
+
+<option value="">All Categories</option>
+
+<option>Headbands</option>
+
+<option>Wool Flowers</option>
+
+<option>Brooches</option>
+
+<option>Kanha Dresses</option>
+
+<option>Gift Sets</option>
+
+</select>
+
+</nav>
+
+</header>
+
+
+
+<section class="featured">
+
+<h2>All Products</h2>
+
+<input
+type="text"
+id="searchInput"
+placeholder="Search Products..."
+class="search-box">
+
+<div class="product-grid">
+
+
+<div class="product-card">
+<a href="product.html">
+<img src="images/Hand_band.webp">
+<h3>Headband</h3>
+<p>₹299</p>
+</a>
+<button
+onclick="addToCart(
+'Pink Wool Headband',
+299
+)">
+Add To Cart
+</button>
+</div>
+
+<div class="product-card">
+<a href="product.html">
+<img src="images/Sunflower.webp">
+<h3>Flower</h3>
+<p>₹299</p>
+</a>
+<button onclick="addToCart('Flower')">
+Add To Cart
+</button>
+</div>
+
+<div class="product-card">
+<a href="product.html">
+<img src="images/Red-Khana-dress.webp">
+<h3>Khana Cute Dress</h3>
+<p>₹299</p>
+</a>
+<button onclick="addToCart('Khana Dress')">
+Add To Cart
+</button>
+</div>
+
+<!-- <div class="product-card">
+<img src="images/Hand_band.webp">
+<h3>Headband</h3>
+<p>₹299</p>
+<button>Add To Cart</button>
+</div>
+
+<div class="product-card">
+<img src="images/Sunflower.webp">
+<h3>Flower</h3>
+<p>₹199</p>
+<button>Add To Cart</button>
+</div>
+
+<div class="product-card">
+<img src="images/Red-Khana-dress.webp">
+<h3>Kanha Dress</h3>
+<p>₹799</p>
+<button>Add To Cart</button>
+</div> -->
+
+</div>
+
+</section>
+<a
+href="https://wa.me/919876543210"
+class="floating-whatsapp">
+
+💬
+
+</a>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<!-- JS -->
+
+<script src="js/products.js"></script>
+
+<script src="js/cart.js"></script>
+
+<script src="js/navbar.js"></script>
+
+<script src="js/home.js"></script>
+
+<script src="js/app.js"></script>
+
+
+</body>
+</html>

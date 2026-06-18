@@ -1,0 +1,5 @@
+loadCart();
+
+updateCartCount();
+
+loadShopProducts();

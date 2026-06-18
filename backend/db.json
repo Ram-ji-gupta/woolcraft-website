@@ -1,0 +1,11 @@
+{
+  "products": [],
+  "orders": [],
+  "customers": [],
+  "settings": {
+    "storeName": "WoolCraft",
+    "currency": "₹",
+    "deliveryCharge": 0,
+    "whatsapp": ""
+  }
+}

@@ -20,7 +20,7 @@ const fileFilter = (req, file, cb) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../uploads"));  // store in backend/uploads
+    cb(null, "uploads/");  // store in backend/uploads
   },
   filename: (req, file, cb) => {
     // Sanitize filename: remove special characters, spaces, etc.

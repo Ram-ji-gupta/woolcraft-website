@@ -12,7 +12,7 @@ if (fs.existsSync(destDir)) {
 fs.mkdirSync(destDir, { recursive: true });
 
 // Define what to copy (directories and file patterns)
-const directoriesToCopy = ['css', 'js', 'images', 'components'];
+const directoriesToCopy = ['css', 'js', 'images', 'components', 'admin'];
 const filesToCopy = ['index.html', 'about.html', 'cart.html', 'checkout.html', 'contact.html', 'faq.html', 'products.html', 'product.html', 'robots.txt', 'sitemap.xml'];
 
 // Copy single files

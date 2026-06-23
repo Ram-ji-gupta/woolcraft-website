@@ -6,6 +6,7 @@ const srcDir = path.join(__dirname, '..');
 const destDir = path.join(__dirname, '..', 'build');
 
 // Clean build directory
+console.log('🧹 Cleaning build directory...');
 if (fs.existsSync(destDir)) {
   fs.rmSync(destDir, { recursive: true, force: true });
 }
@@ -13,7 +14,20 @@ fs.mkdirSync(destDir, { recursive: true });
 
 // Define what to copy (directories and file patterns)
 const directoriesToCopy = ['css', 'js', 'images', 'components', 'admin'];
-const filesToCopy = ['index.html', 'about.html', 'cart.html', 'checkout.html', 'contact.html', 'faq.html', 'products.html', 'product.html', 'robots.txt', 'sitemap.xml'];
+const filesToCopy = [
+  'index.html',
+  'about.html',
+  'cart.html',
+  'checkout.html',
+  'contact.html',
+  'faq.html',
+  'products.html',
+  'product.html',
+  'robots.txt',
+  'sitemap.xml'
+];
+
+console.log('📦 Copying files...\n');
 
 // Copy single files
 filesToCopy.forEach(file => {
@@ -21,7 +35,9 @@ filesToCopy.forEach(file => {
   if (fs.existsSync(src)) {
     const dest = path.join(destDir, file);
     fs.copyFileSync(src, dest);
-    console.log(`Copied: ${file}`);
+    console.log(`✅ Copied: ${file}`);
+  } else {
+    console.log(`⚠️ Skipped (not found): ${file}`);
   }
 });
 
@@ -41,7 +57,8 @@ function copyDirectory(src, dest) {
       copyDirectory(srcPath, destPath);
     } else {
       fs.copyFileSync(srcPath, destPath);
-      console.log(`Copied: ${path.relative(srcDir, srcPath)}`);
+      const relativePath = path.relative(srcDir, srcPath);
+      console.log(`✅ Copied: ${relativePath}`);
     }
   });
 }
@@ -50,7 +67,9 @@ directoriesToCopy.forEach(dir => {
   const src = path.join(srcDir, dir);
   if (fs.existsSync(src)) {
     copyDirectory(src, path.join(destDir, dir));
+  } else {
+    console.log(`⚠️ Skipped (not found): ${dir}/`);
   }
 });
 
-console.log('\n✅ Build complete!');
+console.log('\n🎉 Build complete!');

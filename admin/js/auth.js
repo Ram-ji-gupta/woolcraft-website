@@ -1,25 +1,14 @@
 // LOGIN PROTECTION
 
-if(
-window.location.pathname.includes("admin") &&
-!window.location.href.includes("login.html")
-){
-
-let logged =
-localStorage.getItem(
-"adminLogged"
-);
-
-if(!logged){
-
-window.location =
-"login.html";
-
+if (
+  window.location.pathname.includes("/admin") &&
+  !window.location.pathname.includes("login")
+) {
+  let token = localStorage.getItem("adminToken");
+  if(!token){
+    window.location = "login.html";
+  }
 }
-
-}
-
-
 
 // LOGIN
 
@@ -38,43 +27,24 @@ document.getElementById(
 
 try{
 
-const response =
-await fetch(
-"http://localhost:5000/api/settings"
+const response = await fetch(
+"http://localhost:5000/api/admin/login",
+{
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ username: user, password: pass })
+}
 );
 
-const settings =
-await response.json();
-
-
-if(
-
-user === settings.admin_username &&
-
-pass === settings.admin_password
-
-){
-
-localStorage.setItem(
-"adminLogged",
-"true"
-);
-
-window.location =
-"dashboard.html";
-
+if(!response.ok){
+  throw new Error("Login failed");
 }
 
-else{
-
-alert(
-"Wrong Username or Password"
-);
-
+const data = await response.json();
+localStorage.setItem("adminToken", data.token);
+localStorage.setItem("adminLogged","true");
+window.location = "dashboard.html";
 }
-
-}
-
 catch(error){
 
 console.log(error);
@@ -92,12 +62,7 @@ alert(
 // LOGOUT
 
 function logout(){
-
-localStorage.removeItem(
-"adminLogged"
-);
-
-window.location =
-"login.html";
-
+  localStorage.removeItem("adminLogged");
+  localStorage.removeItem("adminToken");
+  window.location = "login.html";
 }

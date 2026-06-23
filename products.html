@@ -1,149 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse our full collection of handmade wool crafts — flowers, headbands, brooches, Kanha dresses, bags and gift sets. Shop online at WoolCraft Studio.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#7a4f3d">
+  <link rel="canonical" href="https://woolcraftstudio.com/products.html">
 
-<title>Shop Products</title>
+  <!-- Open Graph -->
+  <meta property="og:title" content="Shop All Products | WoolCraft Studio">
+  <meta property="og:description" content="Browse handmade wool flowers, headbands, brooches and more.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://woolcraftstudio.com/products.html">
+  <meta property="og:image" content="https://woolcraftstudio.com/images/Sunflower.webp">
 
-<link rel="stylesheet" href="css/style.css">
+  <title>Shop All Products | WoolCraft Studio</title>
+  <link rel="icon" href="images/logo.png">
+  <link rel="stylesheet" href="css/style.css">
 
+  <script src="js/dark-mode.js"></script>
 </head>
-
 <body>
 
-<header>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<a href="index.html" class="logo">
-    🧶 WoolCraft Studio
-</a>
+  <!-- HEADER -->
+  <header>
+    <a href="index.html" class="logo" aria-label="WoolCraft Studio Home">🧶 WoolCraft Studio</a>
 
-<nav>
+    <button class="mobile-menu" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu" aria-expanded="false">☰</button>
 
-<a href="index.html">Home</a>
-<a href="products.html">Shop</a>
-<a href="cart.html">
-🛒 Cart (<span id="cartCount">0</span>)
-</a>
-<a href="about.html">About</a>
-<a href="contact.html">Contact</a>
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="products.html">Shop</a>
+      <a href="cart.html" aria-label="Shopping cart">🛒 (<span id="cartCount">0</span>)</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <button id="darkModeToggle" class="nav-filter" onclick="toggleDarkMode()" aria-label="Toggle dark mode">🌙</button>
+      <select id="categoryFilter" class="nav-filter" aria-label="Filter by category">
+        <option value="">All Categories</option>
+        <option value="Bags">Bags</option>
+        <option value="Apparels">Apparels</option>
+        <option value="Gift Sets">Gift Sets</option>
+        <option value="Hanging Decorations">Hanging Decorations</option>
+        <option value="Headbands">Headbands</option>
+        <option value="Wool Flowers">Wool Flowers</option>
+        <option value="Brooches">Brooches</option>
+        <option value="Kanha Dresses">Kanha Dresses</option>
+      </select>
+    </nav>
+  </header>
 
-<select id="categoryFilter" class="nav-filter">
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+    <section class="featured" aria-label="All products">
+      <h1 style="text-align:center; font-size:clamp(26px,4vw,40px); color:var(--text-heading); margin-bottom:var(--space-lg);">All Products</h1>
 
-<option value="">All Categories</option>
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Search products…"
+        class="search-box"
+        aria-label="Search products">
 
-<option>Headbands</option>
+      <div class="product-grid" id="shopProducts">
+        <!-- Rendered dynamically by js/products-page.js -->
+      </div>
+    </section>
+  </main>
 
-<option>Wool Flowers</option>
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 WoolCraft Studio. All rights reserved.</p>
+  </footer>
 
-<option>Brooches</option>
+  <a href="https://wa.me/917973856211" class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">💬</a>
 
-<option>Kanha Dresses</option>
+  <div class="orb orb1" aria-hidden="true"></div>
+  <div class="orb orb2" aria-hidden="true"></div>
+  <div class="orb orb3" aria-hidden="true"></div>
 
-<option>Gift Sets</option>
-
-</select>
-
-</nav>
-
-</header>
-
-
-
-<section class="featured">
-
-<h2>All Products</h2>
-
-<input
-type="text"
-id="searchInput"
-placeholder="Search Products..."
-class="search-box">
-
-<div class="product-grid">
-
-
-<div class="product-card">
-<a href="product.html">
-<img src="images/Hand_band.webp">
-<h3>Headband</h3>
-<p>₹299</p>
-</a>
-<button
-onclick="addToCart(
-'Pink Wool Headband',
-299
-)">
-Add To Cart
-</button>
-</div>
-
-<div class="product-card">
-<a href="product.html">
-<img src="images/Sunflower.webp">
-<h3>Flower</h3>
-<p>₹299</p>
-</a>
-<button onclick="addToCart('Flower')">
-Add To Cart
-</button>
-</div>
-
-<div class="product-card">
-<a href="product.html">
-<img src="images/Red-Khana-dress.webp">
-<h3>Khana Cute Dress</h3>
-<p>₹299</p>
-</a>
-<button onclick="addToCart('Khana Dress')">
-Add To Cart
-</button>
-</div>
-
-<!-- <div class="product-card">
-<img src="images/Hand_band.webp">
-<h3>Headband</h3>
-<p>₹299</p>
-<button>Add To Cart</button>
-</div>
-
-<div class="product-card">
-<img src="images/Sunflower.webp">
-<h3>Flower</h3>
-<p>₹199</p>
-<button>Add To Cart</button>
-</div>
-
-<div class="product-card">
-<img src="images/Red-Khana-dress.webp">
-<h3>Kanha Dress</h3>
-<p>₹799</p>
-<button>Add To Cart</button>
-</div> -->
-
-</div>
-
-</section>
-<a
-href="https://wa.me/919876543210"
-class="floating-whatsapp">
-
-💬
-
-</a>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
-<!-- JS -->
-
-<script src="js/products.js"></script>
-
-<script src="js/cart.js"></script>
-
-<script src="js/navbar.js"></script>
-
-<script src="js/home.js"></script>
-
-<script src="js/app.js"></script>
-
-
+  <!-- JS -->
+  <script src="js/config.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/loader.js"></script>
+  <script src="js/products-page.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

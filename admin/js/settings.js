@@ -4,13 +4,13 @@ async function loadSettings(){
 
 try{
 
-const response =
-await fetch(
-"http://localhost:5000/api/settings"
+const token = localStorage.getItem("adminToken");
+const response = await fetch(
+  "http://localhost:5000/api/settings",
+  { headers: { "Authorization": `Bearer ${token}` } }
 );
 
-const data =
-await response.json();
+const data = await response.json();
 
 
 document.getElementById(
@@ -93,26 +93,17 @@ document.getElementById(
 };
 
 
+const token = localStorage.getItem("adminToken");
 await fetch(
-
-"http://localhost:5000/api/settings",
-
-{
-
-method:"PUT",
-
-headers:{
-
-"Content-Type":
-"application/json"
-
-},
-
-body:
-JSON.stringify(settings)
-
-}
-
+  "http://localhost:5000/api/settings",
+  {
+    method:"PUT",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(settings)
+  }
 );
 
 alert(
@@ -170,20 +161,9 @@ localStorage.setItem(
 
 
 // LOAD DARK MODE
-
-if(
-
-localStorage.getItem(
-"darkMode"
-)==="true"
-
-){
-
-document.body.classList.add(
-"dark-mode"
-);
-
+if (localStorage.getItem("darkMode") === "true") {
+  document.body.classList.add("dark-mode");
+} else {
+  document.body.classList.remove("dark-mode");
 }
-
-
 loadSettings();

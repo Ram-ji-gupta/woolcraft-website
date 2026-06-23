@@ -1,74 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shopping Cart</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Your shopping cart at WoolCraft Studio. Review items, adjust quantities and proceed to checkout.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#7a4f3d">
 
-<link rel="stylesheet" href="css/style.css">
+  <title>Shopping Cart | WoolCraft Studio</title>
+  <link rel="icon" href="images/logo.png">
+  <link rel="stylesheet" href="css/style.css">
 
+  <script src="js/dark-mode.js"></script>
 </head>
+
 <body>
 
-<header>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<a href="index.html" class="logo">
-    🧶 WoolCraft Studio
-</a>
+  <!-- HEADER -->
+  <header>
+    <a href="index.html" class="logo" aria-label="WoolCraft Studio Home">🧶 WoolCraft Studio</a>
 
-<nav>
-<a href="index.html">Home</a>
-<a href="products.html">Shop</a>
-<a href="cart.html">
-🛒 Cart (<span id="cartCount">0</span>)
-</a>
-</nav>
+    <button class="mobile-menu" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu"
+      aria-expanded="false">☰</button>
 
-</header>
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="products.html">Shop</a>
+      <a href="cart.html" aria-label="Shopping cart">🛒 (<span id="cartCount">0</span>)</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <button id="darkModeToggle" class="nav-filter" onclick="toggleDarkMode()"
+        aria-label="Toggle dark mode">🌙</button>
+    </nav>
+  </header>
 
-<section class="featured">
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+    <section class="featured" aria-label="Shopping cart">
+      <h1
+        style="text-align:center; font-size:clamp(26px,4vw,40px); color:var(--text-heading); margin-bottom:var(--space-lg);">
+        Your Cart</h1>
 
-<h2>Your Cart</h2>
+      <div id="cartContainer"></div>
 
-<div id="cartContainer"></div>
+      <h3 id="cartTotal" class="cart-total">Total: ₹0</h3>
 
-<h3 id="cartTotal">
-Total: ₹0
-</h3>
+      <a id="checkoutBtn" href="checkout.html" class="btn" style="display:none;">
+        Proceed To Checkout
+      </a>
+    </section>
 
-<a href="checkout.html" class="btn">
-Proceed To Checkout
-</a>
+    <!-- <a href="javascript:void(0)" class="btn" onclick="sendWhatsAppOrder()" id="waOrderCartBtn">
+      Order On WhatsApp
+    </a> -->
+  </main>
 
-</section>
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 WoolCraft Studio. All rights reserved.</p>
+  </footer>
 
-<button onclick="sendWhatsAppOrder()">
-Order On WhatsApp
-</button>
+  <a href="https://wa.me/917973856211" class="floating-whatsapp" target="_blank" rel="noopener noreferrer"
+    aria-label="Chat on WhatsApp">💬</a>
 
-<script src="js/app.js"></script>
+  <div class="orb orb1" aria-hidden="true"></div>
+  <div class="orb orb2" aria-hidden="true"></div>
+  <div class="orb orb3" aria-hidden="true"></div>
 
-<a
-href="https://wa.me/919876543210"
-class="floating-whatsapp">
-
-💬
-
-</a>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
-<!-- JS -->
-
-<script src="js/products.js"></script>
-
-<script src="js/cart.js"></script>
-
-<script src="js/navbar.js"></script>
-
-<script src="js/home.js"></script>
-
-<script src="js/app.js"></script>
-
+  <!-- JS -->
+  <script src="js/config.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/loader.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/whatsapp.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/app.js"></script>
 </body>
+
 </html>

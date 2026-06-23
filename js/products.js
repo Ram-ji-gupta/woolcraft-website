@@ -1,24 +1,22 @@
-const products = [
+/**
+ * WoolCraft Studio — Product Service
+ * Fetches and maintains product state, dispatching a custom event on load.
+ */
+let products = [];
 
-{
-    id:1,
-    name:"Pink Wool Headband",
-    price:299,
-    image:"images/Hand_band.webp"
-},
+async function loadProducts() {
+  try {
+    const res = await fetch(WC.api("/api/products"));
+    if (!res.ok) throw new Error(`Failed to load products: ${res.status}`);
+    products = await res.json();
+    window.products = products; // Global reference for legacy compatibility
 
-{
-    id:2,
-    name:"Sunflower",
-    price:199,
-    image:"images/Sunflower.webp"
-},
-
-{
-    id:3,
-    name:"Kanha Dress",
-    price:799,
-    image:"images/Red-Khana-dress.webp"
+    // Dispatch custom event to notify other scripts (like home.js)
+    document.dispatchEvent(new CustomEvent('productsLoaded', { detail: products }));
+  } catch (err) {
+    console.error("[products] Error loading products:", err);
+  }
 }
 
-];
+// Start loading state immediately
+loadProducts();

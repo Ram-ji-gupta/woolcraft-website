@@ -4,96 +4,52 @@ const express = require("express");
 
 const router = express.Router();
 
-const upload =
-require("../middleware/upload");
+const upload = require("../middleware/upload");
+const requireAdmin = require("../middleware/requireAdmin");
 
 const {
-
-getProducts,
-getProductById,
-addProduct,
-updateProduct,
-deleteProduct
-
-}
-=
-require(
-"../controllers/productController"
-);
+  getProducts,
+  getProductById,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  productValidationRules
+} = require("../controllers/productController");
 
 
 // ==========================
-// GET ALL PRODUCTS
+// GET ALL PRODUCTS (public)
 // ==========================
 
-router.get(
-
-"/",
-
-getProducts
-
-);
+router.get("/", getProducts);
 
 
 // ==========================
-// GET SINGLE PRODUCT
+// GET SINGLE PRODUCT (public)
 // ==========================
 
-router.get(
-
-"/:id",
-
-getProductById
-
-);
+router.get("/:id", getProductById);
 
 
 // ==========================
-// ADD PRODUCT
+// ADD PRODUCT (admin only)
 // ==========================
 
-router.post(
-
-"/",
-
-upload.single(
-"image"
-),
-
-addProduct
-
-);
+router.post("/", requireAdmin, upload.single("image"), productValidationRules, addProduct);
 
 
 // ==========================
-// UPDATE PRODUCT
+// UPDATE PRODUCT (admin only)
 // ==========================
 
-router.put(
-
-"/:id",
-
-upload.single(
-"image"
-),
-
-updateProduct
-
-);
+router.put("/:id", requireAdmin, upload.single("image"), productValidationRules, updateProduct);
 
 
 // ==========================
-// DELETE PRODUCT
+// DELETE PRODUCT (admin only)
 // ==========================
 
-router.delete(
-
-"/:id",
-
-deleteProduct
-
-);
+router.delete("/:id", requireAdmin, deleteProduct);
 
 
-module.exports =
-router;
+module.exports = router;

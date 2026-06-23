@@ -1,10 +1,13 @@
 async function loadCustomers(){
 
 try{
-
+const token = localStorage.getItem("adminToken");
 const response =
 await fetch(
-"http://localhost:5000/api/customers"
+"http://localhost:5000/api/customers",
+{
+  headers: token ? { Authorization: `Bearer ${token}` } : undefined
+}
 );
 
 const customers =

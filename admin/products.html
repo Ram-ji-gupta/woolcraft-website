@@ -51,20 +51,32 @@ Logout
 All Products
 </h1>
 
-<button
-onclick="window.location='add-product.html'">
-
-Add Product
-
-</button>
-
 <br><br>
 
-<input
-type="text"
-id="productSearch"
-placeholder="Search Products..."
-onkeyup="searchProducts()">
+<button
+  onclick="window.location='add-product.html'"
+  style="margin-bottom:18px;">Add Product</button>
+
+<div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:18px;">
+  <button
+    id="filterBtn"
+    type="button"
+    onclick="searchProducts()"
+    style="margin-left:0;">Filter</button>
+
+  <input
+    type="text"
+    id="productSearch"
+    placeholder="Search Products by name or category..."
+    onkeyup="searchProducts()"
+    style="margin-bottom:0; flex:1; min-width:220px;">
+
+  <button
+    id="clearSearchBtn"
+    type="button"
+    onclick="clearSearch()"
+    style="margin-left:10px; display:none;">Clear</button>
+</div>
 
 <hr>
 
@@ -85,22 +97,11 @@ id="productList">
 <script src="js/globalSettings.js"></script>
 
 <script>
-
-if(
-
-localStorage.getItem(
-"darkMode"
-)==="true"
-
-){
-
-document.body.classList.add(
-"dark-mode"
-);
-
+if(localStorage.getItem("darkMode")==="true"){
+document.body.classList.add("dark-mode");
 }
-
 </script>
+
 
 </body>
 </html>

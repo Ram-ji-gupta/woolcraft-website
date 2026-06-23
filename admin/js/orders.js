@@ -5,10 +5,13 @@
 async function loadOrders() {
 
 try {
-
+const token = localStorage.getItem("adminToken");
 const response =
 await fetch(
-"http://localhost:5000/api/orders"
+"http://localhost:5000/api/orders",
+{
+  headers: token ? { Authorization: `Bearer ${token}` } : undefined
+}
 );
 
 const orders =
@@ -30,7 +33,7 @@ order.status || "Pending";
 
 container.innerHTML += `
 
-<div class="order-card">
+<div class="order-card" data-order-id="${order.id}">
 
 <h3>
 ${order.customer}
@@ -60,42 +63,6 @@ ${status}
 
 </div>
 
-<div class="status-buttons">
-
-<button
-class="pending-btn"
-onclick="updateStatus(${order.id},'Pending')">
-
-Pending
-
-</button>
-
-<button
-class="processing-btn"
-onclick="updateStatus(${order.id},'Processing')">
-
-Processing
-
-</button>
-
-<button
-class="shipped-btn"
-onclick="updateStatus(${order.id},'Shipped')">
-
-Shipped
-
-</button>
-
-<button
-class="delivered-btn"
-onclick="updateStatus(${order.id},'Delivered')">
-
-Delivered
-
-</button>
-
-</div>
-
 </div>
 
 `;
@@ -117,49 +84,67 @@ console.log(error);
 // UPDATE STATUS
 // ==========================
 
-async function updateStatus(id,status){
+const STATUSES = ["Pending","Processing","Shipped","Delivered"];
 
-try{
-
-await fetch(
-
-`http://localhost:5000/api/orders/${id}`,
-
-{
-
-method:"PUT",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-status
-
-})
-
+function normalizeSelectedIds() {
+  const cards = document.querySelectorAll('.order-card.order-selected');
+  return Array.from(cards).map(el => Number(el.dataset.orderId)).filter(Boolean);
 }
 
-);
-
-loadOrders();
-
+function toggleCardSelected(cardEl) {
+  if (!cardEl) return;
+  cardEl.classList.toggle('order-selected');
 }
 
-catch(error){
+async function updateStatusesForSelected() {
+  // keep UI responsive
+  // (optional) disable button could be added later
+  const selectedIds = normalizeSelectedIds();
+  if (selectedIds.length === 0) {
+    alert("Select one or more orders first");
+    return;
+  }
 
-console.log(error);
+  const statusSelect = document.getElementById('bulkStatusSelect');
+  const newStatus = statusSelect?.value;
+  if (!STATUSES.includes(newStatus)) {
+    alert("Choose a valid status");
+    return;
+  }
 
+  try {
+    const token = localStorage.getItem("adminToken");
+    // optimized: run PUTs in parallel
+    await Promise.all(
+      selectedIds.map(id =>
+        fetch(`http://localhost:5000/api/orders/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ status: newStatus })
+        })
+      )
+    );
+    await loadOrders();
+  } catch (error) {
+    console.log(error);
+    alert("Failed to update order status");
+  }
 }
-
-}
-
 
 // ==========================
 // INITIALIZE
 // ==========================
 
+// click-to-select (no checkbox)
+document.addEventListener('click', (e) => {
+  const list = document.getElementById('ordersList');
+  const card = e.target.closest('.order-card');
+  if (!list || !card || !list.contains(card)) return;
+  toggleCardSelected(card);
+});
+
 loadOrders();
+

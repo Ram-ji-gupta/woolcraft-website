@@ -1,0 +1,22 @@
+{
+  "name": "wollen-craft",
+  "version": "1.0.0",
+  "description": "WoolCraft static e‑commerce site",
+  "main": "index.html",
+  "scripts": {
+    "clean": "npx rimraf build",
+    "copy": "npx copyfiles -f \"**/*.{html,png,jpg,svg,webp}\" -x \"node_modules/**\" -x \"build/**\" build/",
+    "build": "npm run clean && npm run copy",
+    "serve": "npx serve -s build",
+    "serve:dev": "npx serve ."
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^5.0.0",
+    "serve": "^14.2.0",
+    "terser": "^5.48.0"
+  }
+}

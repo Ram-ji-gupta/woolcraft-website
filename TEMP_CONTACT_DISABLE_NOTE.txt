@@ -1,0 +1,5 @@
+To disable contact email sending temporarily, set in backend/.env:
+CONTACT_EMAIL_ENABLED=false
+
+This repo edit capability may be restricted for .env; if you can't edit it via tools, manually add the line in backend/.env.
+

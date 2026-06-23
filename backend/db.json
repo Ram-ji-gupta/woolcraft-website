@@ -1,11 +1,51 @@
 {
-  "products": [],
+  "products": [
+    {
+      "id": 1,
+      "name": "Handmade Wool Sunflower",
+      "price": 199,
+      "category": "Wool Flowers",
+      "stock": 10,
+      "image": "Sunflower.webp",
+      "description": "Beautiful handmade wool sunflower decoration"
+    },
+    {
+      "id": 2,
+      "name": "Woolen Headband",
+      "price": 299,
+      "category": "Headbands",
+      "stock": 15,
+      "image": "Hand_band.webp",
+      "description": "Cozy handmade woolen headband"
+    },
+    {
+      "id": 3,
+      "name": "Black Butterfly Brooch",
+      "price": 149,
+      "category": "Brooches",
+      "stock": 8,
+      "image": "Black Butterfly.webp",
+      "description": "Elegant black butterfly brooch"
+    },
+    {
+      "id": 4,
+      "name": "Red Khan Dress",
+      "price": 499,
+      "category": "Kanha Dresses",
+      "stock": 5,
+      "image": "Red-Khana-dress.webp",
+      "description": "Beautiful red dress for Kanha ji"
+    }
+  ],
   "orders": [],
   "customers": [],
   "settings": {
+    "id": 1,
     "storeName": "WoolCraft",
     "currency": "₹",
     "deliveryCharge": 0,
-    "whatsapp": ""
+    "whatsapp": "",
+    "admin_username": "admin",
+    "admin_password": "admin@123"
   }
 }

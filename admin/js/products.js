@@ -41,6 +41,8 @@ ${product.name}
 ${product.category}
 </div>
 
+${product.description ? `<div class="description">${product.description}</div>` : ''}
+
 <div class="stock">
 Stock : ${product.stock}
 </div>
@@ -116,19 +118,31 @@ document.getElementById(
 "productSearch"
 );
 
+const clearBtn = document.getElementById("clearSearchBtn");
+
 if(!input) return;
 
 const keyword =
 input.value.toLowerCase();
 
+// show/hide clear button
+if(clearBtn){
+clearBtn.style.display = keyword ? "inline-block" : "none";
+}
+
+if(!keyword){
+// Empty search => show all
+return displayProducts(allProducts);
+}
+
 const filtered =
 allProducts.filter(product=>
 
-product.name.toLowerCase().includes(keyword)
+(product.name || "").toLowerCase().includes(keyword)
 
 ||
 
-product.category.toLowerCase().includes(keyword)
+(product.category || "").toLowerCase().includes(keyword)
 
 );
 
@@ -136,6 +150,18 @@ displayProducts(
 filtered
 );
 
+}
+
+function clearSearch(){
+const input = document.getElementById("productSearch");
+if(input){
+input.value = "";
+}
+const clearBtn = document.getElementById("clearSearchBtn");
+if(clearBtn){
+clearBtn.style.display = "none";
+}
+displayProducts(allProducts);
 }
 
 
@@ -199,23 +225,18 @@ file
 
 }
 
-const response =
-await fetch(
+const token = localStorage.getItem("adminToken");
 
-"http://localhost:5000/api/products",
-
-{
-
-method:"POST",
-
-body:formData
-
-}
-
+const response = await fetch(
+  "http://localhost:5000/api/products",
+  {
+    method: "POST",
+    body: formData,
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  }
 );
 
-const data =
-await response.json();
+const data = await response.json();
 
 console.log(data);
 
@@ -260,6 +281,7 @@ return;
 }
 
 try{
+const token = localStorage.getItem("adminToken");
 
 const response =
 await fetch(
@@ -268,7 +290,8 @@ await fetch(
 
 {
 
-method:"DELETE"
+method:"DELETE",
+headers: token ? { Authorization: `Bearer ${token}` } : undefined,
 
 }
 
@@ -297,10 +320,7 @@ console.log(error);
 // ==========================
 
 function editProduct(id){
-
-window.location =
-`edit-product.html?id=${id}`;
-
+    window.location = `edit-product?id=${id}`;
 }
 
 

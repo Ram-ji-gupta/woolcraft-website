@@ -1,82 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Product Details</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View product details — handmade wool craft from WoolCraft Studio. See pricing, description, stock status and order via WhatsApp.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#7a4f3d">
 
-<link rel="stylesheet" href="css/style.css">
+  <title>Product Details – WoolCraft Studio</title>
+  <link rel="icon" href="images/logo.png">
+  <link rel="stylesheet" href="css/style.css">
 
+  <script src="js/dark-mode.js"></script>
 </head>
 <body>
 
-<header>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<a href="index.html" class="logo">
-    🧶 WoolCraft Studio
-</a>
-<nav>
-<a href="index.html">Home</a>
-<a href="products.html">Shop</a>
-<a href="cart.html">
-🛒 Cart (<span id="cartCount">0</span>)
-</a>
-<a href="about.html">About</a>
-<a href="contact.html">Contact</a>
-</nav>
+  <!-- HEADER -->
+  <header>
+    <a href="index.html" class="logo" aria-label="WoolCraft Studio Home">🧶 WoolCraft Studio</a>
 
-</header>
+    <button class="mobile-menu" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu" aria-expanded="false">☰</button>
 
-<section class="product-details">
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="products.html">Shop</a>
+      <a href="cart.html" aria-label="Shopping cart">🛒 (<span id="cartCount">0</span>)</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <button id="darkModeToggle" class="nav-filter" onclick="toggleDarkMode()" aria-label="Toggle dark mode">🌙</button>
+    </nav>
+  </header>
 
-<div class="product-image">
-<img src="images/Hand_band.webp" alt="">
-</div>
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+    <section class="product-details">
+      <div class="product-image">
+        <img src="images/Hand_band.webp" alt="Product image" id="productImage" width="420" height="320" decoding="async">
+      </div>
 
-<div class="product-info">
+      <div class="product-info">
+        <h1 id="productName">Loading…</h1>
+        <p class="price" id="productPrice">₹—</p>
+        <p id="productDescription">Loading product details…</p>
+        <p id="productStatus" style="margin-top:12px; font-weight:700;"></p>
 
-<h1>Pink Wool Headband</h1>
+        <button type="button" id="addToCartBtn" onclick="addToCart(0)">Add To Cart</button>
 
-<p class="price">₹299</p>
+        <a href="https://wa.me/917973856211" class="whatsapp-btn" id="waOrderBtn" target="_blank" rel="noopener noreferrer">
+          Order On WhatsApp
+        </a>
+      </div>
+    </section>
+  </main>
 
-<p>
-Handmade wool headband crafted with soft premium wool.
-Perfect for gifts and daily wear.
-</p>
+  <a href="https://wa.me/917737707062" class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">💬</a>
 
-<button onclick="addToCart('Pink Wool Headband',299)">
-Add To Cart
-</button>
+  <div class="orb orb1" aria-hidden="true"></div>
+  <div class="orb orb2" aria-hidden="true"></div>
+  <div class="orb orb3" aria-hidden="true"></div>
 
-<a href="https://wa.me/919876543210" class="whatsapp-btn">
-Order On WhatsApp
-</a>
+  <!-- JS -->
+  <script src="js/config.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/loader.js"></script>
+  <script src="js/cart.js"></script>
 
-</div>
+  <script>
+    async function loadProductFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const id = Number(params.get('id'));
 
-</section>
+      const img = document.getElementById('productImage');
+      const title = document.getElementById('productName');
+      const price = document.getElementById('productPrice');
+      const desc = document.getElementById('productDescription');
+      const status = document.getElementById('productStatus');
+      const btn = document.getElementById('addToCartBtn');
+      const waLink = document.getElementById('waOrderBtn');
 
-<!-- JS -->
+      if (!Number.isFinite(id) || id <= 0) {
+        window.location.replace('products.html');
+        return;
+      }
 
-<script src="js/products.js"></script>
+      try {
+        const res = await fetch(WC.api(`/api/products/${id}`));
+        if (!res.ok) throw new Error(`Product not found (HTTP ${res.status})`);
+        const p = await res.json();
+        if (!p || !p.id) throw new Error('Invalid product data');
 
-<script src="js/cart.js"></script>
+        const imgSrc = WC.img(p.image);
 
-<script src="js/navbar.js"></script>
+        if (img && imgSrc) { img.src = imgSrc; img.alt = p.name || ''; }
+        if (title) title.textContent = p.name || '';
+        if (price) price.textContent = `₹${p.price ?? 0}`;
+        if (desc) desc.textContent = p.description || '';
 
-<script src="js/home.js"></script>
+        if (status) {
+          const stock = Number(p.stock) || 0;
+          if (stock > 0) {
+            status.textContent = `In Stock (${stock} available)`;
+            status.style.color = '#27ae60';
+          } else {
+            status.textContent = 'Out of Stock';
+            status.style.color = '#e74c3c';
+          }
+        }
 
-<script src="js/app.js"></script>
+        document.title = `${p.name || 'Product'} – WoolCraft Studio`;
 
-<a
-href="https://wa.me/919876543210"
-class="floating-whatsapp">
+        // Canonical URL for product
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+          canonical = document.createElement('link');
+          canonical.rel = 'canonical';
+          document.head.appendChild(canonical);
+        }
+        canonical.href = `https://woolcraftstudio.com/product.html?id=${p.id}`;
 
-💬
+        if (!Array.isArray(window.products)) window.products = [];
+        if (!window.products.find(x => x.id === p.id)) window.products.push(p);
 
-</a>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
+        if (btn) btn.setAttribute('onclick', `addToCart(${p.id})`);
+
+        if (waLink) {
+          const msg = `Hi! I'm interested in "${p.name}" (₹${p.price}). Is it available?`;
+          waLink.href = WC.waLink(msg);
+        }
+      } catch (e) {
+        console.error('[product] load error:', e);
+        if (title) title.textContent = 'Product not found';
+        if (desc) desc.textContent = 'Could not load product details. Please try again.';
+        if (btn) btn.style.display = 'none';
+      }
+    }
+
+    loadProductFromQuery();
+  </script>
+
+  <script src="js/navbar.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

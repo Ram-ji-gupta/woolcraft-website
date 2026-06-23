@@ -6,6 +6,11 @@ window.location.search
 const id =
 params.get("id");
 
+if (!id) {
+  alert('No product ID provided. Redirecting to products list.');
+  window.location = 'products.html';
+}
+
 
 // LOAD PRODUCT
 
@@ -13,10 +18,10 @@ async function loadProduct(){
 
 try{
 
-const response =
-await fetch(
-`http://localhost:5000/api/products/${id}`
-);
+const token = localStorage.getItem('adminToken');
+  const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  });
 
 const product =
 await response.json();
@@ -105,15 +110,16 @@ file
 
 }
 
+const token = localStorage.getItem('adminToken');
 await fetch(
 
 `http://localhost:5000/api/products/${id}`,
 
 {
 
-method:"PUT",
-
-body:formData
+method: "PUT",
+body: formData,
+headers: token ? { Authorization: `Bearer ${token}` } : undefined,
 
 }
 

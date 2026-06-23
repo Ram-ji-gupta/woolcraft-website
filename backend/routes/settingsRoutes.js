@@ -5,27 +5,20 @@ const router =
 express.Router();
 
 const {
+  getSettings,
+  updateSettings
+} = require("../controllers/settingsController");
 
-getSettings,
-updateSettings
+const requireAdmin = require("../middleware/requireAdmin");
+const sanitizeSettings = require("../middleware/sanitizeSettings");
 
-}
-=
-require(
-"../controllers/settingsController"
-);
+router.get("/", (req, res, next) => {
+  // only admin can read settings; response will not include admin_password
+  requireAdmin(req, res, () => getSettings(req, {
+    json: (row) => res.json(sanitizeSettings(row))
+  }));
+});
 
+router.put("/", requireAdmin, updateSettings);
 
-router.get(
-"/",
-getSettings
-);
-
-router.put(
-"/",
-updateSettings
-);
-
-
-module.exports =
-router;
+module.exports = router;

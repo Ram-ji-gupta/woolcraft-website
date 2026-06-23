@@ -32,3 +32,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Database backups (may contain sensitive data)
+database/woolcraft-database.sql

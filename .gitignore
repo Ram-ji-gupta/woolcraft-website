@@ -35,3 +35,4 @@ Thumbs.db
 
 # Database backups (may contain sensitive data)
 database/woolcraft-database.sql
+woolcraft-full.sql

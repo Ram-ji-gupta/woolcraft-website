@@ -5,12 +5,27 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
 require("dotenv").config();
-require("./config/db");  // ensure DB is connected
 
 const app = express();
 
-// Security middleware - Disabled for development
-// app.use(helmet());
+// Security middleware - configurable via NODE_ENV
+const isProduction = process.env.NODE_ENV === "production";
+if (isProduction) {
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        connectSrc: ["'self'"]
+      }
+    }
+  }));
+} else {
+  // Development: disable helmet to allow images to load easily
+  console.log("Helmet disabled for development");
+}
 
 // Configure CORS
 const corsOptions = {

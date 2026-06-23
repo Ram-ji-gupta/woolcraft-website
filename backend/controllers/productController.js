@@ -1,4 +1,4 @@
-const db = require("../config/db");
+const { readDB, writeDB } = require("../config/db-helper");
 const fs = require("fs");
 const path = require("path");
 const { body, validationResult } = require("express-validator");
@@ -15,204 +15,113 @@ exports.productValidationRules = [
 // ==========================
 // GET ALL PRODUCTS
 // ==========================
-
 exports.getProducts = (req, res) => {
-  // Primary source: MySQL table `products`
-  db.query(
-    "SELECT * FROM products ORDER BY id DESC",
-    (err, result) => {
-      if (err) {
-        console.error("Error fetching products:", err);
-        return res.status(500).json({ message: "Failed to fetch products" });
-      }
-
-      if (Array.isArray(result) && result.length > 0) {
-        return res.json(result);
-      }
-
-      // Fallback: local JSON (useful for dev when MySQL is empty/broken)
-      try {
-        const fallbackPath = path.join(__dirname, "../db.json");
-        const fallback = require(fallbackPath);
-        const fallbackProducts = Array.isArray(fallback?.products) ? fallback.products : [];
-        return res.json(fallbackProducts);
-      } catch (e) {
-        console.error("Fallback failed:", e);
-        return res.json([]);
-      }
-    }
-  );
+  const data = readDB();
+  res.json(data.products);
 };
-
 
 // ==========================
 // GET PRODUCT BY ID
 // ==========================
-
 exports.getProductById = (req, res) => {
   const id = Number(req.params.id);
-
   if (isNaN(id)) {
     return res.status(400).json({ message: "Invalid product ID" });
   }
 
-  db.query(
-    "SELECT * FROM products WHERE id=?",
-    [id],
-    (err, result) => {
-      if (err) {
-        console.error("Error fetching product:", err);
-        return res.status(500).json({ message: "Failed to fetch product" });
-      }
-
-      if (result.length > 0) {
-        return res.json(result[0]);
-      }
-
-      // Fallback to db.json
-      try {
-        const fallbackPath = path.join(__dirname, "../db.json");
-        const fallback = require(fallbackPath);
-        const fallbackProducts = Array.isArray(fallback?.products) ? fallback.products : [];
-        
-        const p = fallbackProducts.find(x => Number(x.id) === id);
-        if (p) {
-          return res.json(p);
-        }
-      } catch (e) {
-        console.error("Fallback failed:", e);
-      }
-
-      return res.status(404).json({ message: "Product not found" });
-    }
-  );
+  const data = readDB();
+  const product = data.products.find(p => p.id === id);
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+  res.json(product);
 };
-
 
 // ==========================
 // ADD PRODUCT
 // ==========================
-
 exports.addProduct = (req, res) => {
-  // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { name, price, category, stock, description } = req.body;
-  const image = req.file ? req.file.filename : "";
+  const data = readDB();
+  const newId = data.products.length > 0 ? Math.max(...data.products.map(p => p.id)) + 1 : 1;
 
-  db.query(
-    "INSERT INTO products (name, price, category, stock, image, description) VALUES (?, ?, ?, ?, ?, ?)",
-    [name, price, category, stock, image, description],
-    (err, result) => {
-      if (err) {
-        console.error("Error adding product:", err);
-        return res.status(500).json({ message: "Failed to add product" });
-      }
+  const newProduct = {
+    id: newId,
+    name: req.body.name,
+    price: req.body.price,
+    category: req.body.category,
+    stock: req.body.stock,
+    description: req.body.description || "",
+    image: req.file ? req.file.filename : ""
+  };
 
-      res.json({ message: "Product Added Successfully" });
-    }
-  );
+  data.products.push(newProduct);
+  writeDB(data);
+  res.json({ message: "Product Added Successfully" });
 };
-
 
 // ==========================
 // UPDATE PRODUCT
 // ==========================
-
 exports.updateProduct = (req, res) => {
-  // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const id = req.params.id;
-  const { name, price, category, stock, description } = req.body;
-  let image = "";
+  const id = Number(req.params.id);
+  const data = readDB();
+  const productIndex = data.products.findIndex(p => p.id === id);
 
-  if (req.file) {
-    image = req.file.filename;
+  if (productIndex === -1) {
+    return res.status(404).json({ message: "Product not found" });
   }
 
-  db.query(
-    "SELECT image FROM products WHERE id=?",
-    [id],
-    (err, result) => {
-      if (err) {
-        console.error("Error finding product:", err);
-        return res.status(500).json({ message: "Failed to update product" });
-      }
+  const updatedProduct = {
+    ...data.products[productIndex],
+    name: req.body.name,
+    price: req.body.price,
+    category: req.body.category,
+    stock: req.body.stock,
+    description: req.body.description || ""
+  };
 
-      if (result.length === 0) {
-        return res.status(404).json({ message: "Product not found" });
-      }
+  if (req.file) {
+    updatedProduct.image = req.file.filename;
+  }
 
-      if (!image) {
-        image = result[0].image;
-      }
+  data.products[productIndex] = updatedProduct;
+  writeDB(data);
 
-      db.query(
-        "UPDATE products SET name=?, price=?, category=?, stock=?, image=?, description=? WHERE id=?",
-        [name, price, category, stock, image, description, id],
-        (err, result) => {
-          if (err) {
-            console.error("Error updating product:", err);
-            return res.status(500).json({ message: "Failed to update product" });
-          }
-
-          res.json({ message: "Product Updated Successfully" });
-        }
-      );
-    }
-  );
+  res.json({ message: "Product Updated Successfully" });
 };
-
 
 // ==========================
 // DELETE PRODUCT
 // ==========================
 exports.deleteProduct = (req, res) => {
-  const id = req.params.id;
+  const id = Number(req.params.id);
+  const data = readDB();
+  const productIndex = data.products.findIndex(p => p.id === id);
 
-  db.query(
-    "SELECT image FROM products WHERE id=?",
-    [id],
-    (err, result) => {
-      if (err) {
-        console.error("Error finding product:", err);
-        return res.status(500).json({ message: "Failed to delete product" });
-      }
+  if (productIndex === -1) {
+    return res.status(404).json({ message: "Product not found" });
+  }
 
-      if (result.length === 0) {
-        return res.status(404).json({ message: "Product not found" });
-      }
+  // Delete image file if exists
+  const product = data.products[productIndex];
+  if (product.image) {
+    const imagePath = path.join(__dirname, "../uploads", product.image);
+    fs.unlink(imagePath, (err) => {
+      if (err) console.log("Image not deleted:", err.message);
+    });
+  }
 
-      const image = result[0].image;
-
-      db.query(
-        "DELETE FROM products WHERE id=?",
-        [id],
-        (err) => {
-          if (err) {
-            console.error("Error deleting product:", err);
-            return res.status(500).json({ message: "Failed to delete product" });
-          }
-
-          if (image) {
-            const imagePath = path.join(__dirname, "../uploads", image);
-            fs.unlink(imagePath, (err) => {
-              if (err) {
-                console.log("Image not deleted:", err.message);
-              }
-            });
-          }
-
-          res.json({ message: "Product Deleted Successfully" });
-        }
-      );
-    }
-  );
+  data.products.splice(productIndex, 1);
+  writeDB(data);
+  res.json({ message: "Product Deleted Successfully" });
 };

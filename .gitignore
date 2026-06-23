@@ -5,9 +5,6 @@ node_modules/
 .env
 *.env.local
 
-# Uploads directory (contains user-uploaded files)
-backend/uploads/
-
 # Build output
 build/
 

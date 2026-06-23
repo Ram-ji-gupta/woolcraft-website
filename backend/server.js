@@ -53,8 +53,13 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads"), {
 
 app.use(express.static(path.join(__dirname, "..")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "index.html"));
+// Fallback to index.html for SPA routing (Express 5 compatible)
+app.use((req, res, next) => {
+  if (req.method === "GET" && !req.path.startsWith("/api") && !req.path.startsWith("/uploads")) {
+    res.sendFile(path.join(__dirname, "..", "index.html"));
+  } else {
+    next();
+  }
 });
 
 app.use((err, req, res, next) => {
